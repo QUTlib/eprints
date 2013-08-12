@@ -453,7 +453,7 @@ sub _add_live_http_paths
 
 =begin InternalDoc
 
-=item $request = $repository->get_request;
+=item $request = $repository->request;
 
 Return the Apache request object (from mod_perl) or undefined if 
 this isn't a CGI script.
@@ -463,8 +463,8 @@ this isn't a CGI script.
 =cut
 ######################################################################
 
-
-sub get_request
+sub get_request { &request }
+sub request
 {
 	my( $self ) = @_;
 
@@ -2669,7 +2669,7 @@ sub noise
 
 =begin InternalDoc
 
-=item $boolean = $repository->get_online
+=item $boolean = $repository->is_online
 
 Return true if this script is running via CGI, return false if we're
 on the command line.
@@ -2679,7 +2679,8 @@ on the command line.
 =cut
 ######################################################################
 
-sub get_online
+sub get_online { &is_online }
+sub is_online
 {
 	my( $self ) = @_;
 	
@@ -2691,7 +2692,7 @@ sub get_online
 
 =begin InternalDoc
 
-=item $secure = $repository->get_secure
+=item $secure = $repository->is_secure
 
 Returns true if we're using HTTPS/SSL (checks get_online first).
 
@@ -2700,12 +2701,13 @@ Returns true if we're using HTTPS/SSL (checks get_online first).
 =cut
 ######################################################################
 
-sub get_secure
+sub get_secure { &is_secure }
+sub is_secure
 {
 	my( $self ) = @_;
 
 	# mod_ssl sets "HTTPS", but only AFTER the Auth stage
-	return $self->get_online &&
+	return $self->is_online &&
 		($ENV{"HTTPS"} || $self->get_request->dir_config( 'EPrints_Secure' ));
 }
 
@@ -4193,17 +4195,16 @@ sub clone_for_me
 
 Redirects the browser to $url.
 
-If %opts contains a 'mode', it is used to modify the semantics of
-the redirection:
+Optional argument $opts{status_code} to specify the returned HTTP status code:
 
-    value  alias       HTTP Status
-    301    permanent   301 Moved Permanently
-    302    temporary   302 Found
-    303    other       303 See Other
-    307    temporary!  307 Temporary Redirect
-    308    permanent!  308 Permanent Redirect  (experimental)
+    value  HTTP Status
+    301    301 Moved Permanently
+    302    302 Found
+    303    303 See Other
+    307    307 Temporary Redirect
+    308    308 Permanent Redirect  (experimental)
 
-By default it issues a 302 temporary redirection.
+By default 302 temporary redirection is issued.
 
 =end InternalDoc
 
@@ -4215,57 +4216,23 @@ sub redirect
 	my( $self, $url, %opts ) = @_;
 
 	# Write HTTP headers if appropriate
-	if( $self->{"offline"} )
+	if( !$self->is_online )
 	{
 		print STDERR "ODD! redirect called in offline script.\n";
 		return;
 	}
 
-	my $status = 302, $message = "Moved";
-	if( exists $opts{mode} )
-	{
-		SWITCH: for( $opts{mode} )
-		{
-			if( /^(301|permanent)$/i )
-			{
-				$status = 301; $message = 'Moved Permanently';
-				delete $opts{mode};
-				last SWITCH;
-			}
-			if( /^(302|temporary)$/i )
-			{
-				$status = 302; $message = 'Found';
-				delete $opts{mode};
-				last SWITCH;
-			}
-			if( /^(303|other)$/i )
-			{
-				$status = 303; $message = 'See Other';
-				delete $opts{mode};
-				last SWITCH;
-			}
-			if( /^(307|temporary!)$/i )
-			{
-				$status = 307; $message = 'Temporary Redirect';
-				delete $opts{mode};
-				last SWITCH;
-			}
-			if( /^(308|permanent!)$/i )
-			{
-				$status = 308; $message = 'Permanent Redirect';
-				delete $opts{mode};
-				last SWITCH;
-			}
-		}
-	}
 
-	EPrints::Apache::AnApache::send_status_line( $self->{"request"}, $status, $message );
+	my $status = delete $opts{status_code} || 302;
+	
+	EPrints::Apache::AnApache::send_status_line( $self->request, $status );
 	EPrints::Apache::AnApache::header_out( 
-		$self->{"request"},
+		$self->request,
 		"Location",
 		$url );
 
-	EPrints::Apache::AnApache::send_http_header( $self->{"request"}, %opts );
+	EPrints::Apache::AnApache::send_http_header( $self->request, %opts );
+
 	return $status;
 }
 
