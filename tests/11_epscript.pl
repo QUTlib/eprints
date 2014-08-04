@@ -1,5 +1,5 @@
 use strict;
-use Test::More tests => (14);
+use Test::More tests => (19);
 
 BEGIN { use_ok( "EPrints" ); }
 BEGIN { use_ok( "EPrints::Test" ); }
