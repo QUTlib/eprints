@@ -50,11 +50,11 @@ sub render_func
 
 $rv = EPrints::Script::execute( '$ep.render_value_function("::render_func","title")', { session=>$session, ep=>[$eprint] } );
 is( $rv->[1], "XHTML", "render_value_function() without extra returns XHTML" );
-like( $rv->[0]->nodeValue, qr/^field="title", value="The Title", extra=$/, "render_value_function() without extra runs" );
+is( $rv->[0]->nodeValue, 'field="title", value="The Title", extra=', "render_value_function() without extra runs" );
 
 $rv = EPrints::Script::execute( '$ep.render_value_function("::render_func","title", "xyz")', { session=>$session, ep=>[$eprint] } );
 is( $rv->[1], "XHTML", "render_value_function() with extra returns XHTML" );
-like( $rv->[0]->nodeValue, qr/^field="title", value="The Title", extra=xyz$/, "render_value_function() with extra runs" );
+is( $rv->[0]->nodeValue, 'field="title", value="The Title", extra=xyz', "render_value_function() with extra runs" );
 
 throws_ok {
 	EPrints::Script::execute( '$ep.render_value_function("::render_func","title", "xyz")', { session=>$session, ep=>[1,"INT"] } )
