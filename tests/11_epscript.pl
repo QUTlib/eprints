@@ -37,6 +37,30 @@ my $mfield = $session->dataset( "user" )->field( "roles" );
 $rv = EPrints::Script::execute( '$list.join(":")', { session=>$session, list=>[["a","b","c"],$mfield] } );
 is( $rv->[0], "a:b:c", "join() function on a multiple field value" );
 
+## Test render_value_function
+
+my $dataset = $session->get_repository->dataset( "archive" );
+my $eprint = EPrints::DataObj::EPrint->new_from_data( $session->get_repository, { eprint_status => "archive" }, $dataset );
+$eprint->set_value( 'title', 'The Title' );
+sub render_func
+{
+	my( $session, $field, $value, $extra ) = @_;
+	return $session->make_text( 'field="'.$field->name.'", value="'.$value.'", extra='.($extra//'') );
+}
+
+$rv = EPrints::Script::execute( '$ep.render_value_function("::render_func","title")', { session=>$session, ep=>[$eprint] } );
+is( $rv->[1], "XHTML", "render_value_function() without extra returns XHTML" );
+like( $rv->[0]->nodeValue, qr/^field="title", value="The Title", extra=$/, "render_value_function() without extra runs" );
+
+$rv = EPrints::Script::execute( '$ep.render_value_function("::render_func","title", "xyz")', { session=>$session, ep=>[$eprint] } );
+is( $rv->[1], "XHTML", "render_value_function() with extra returns XHTML" );
+like( $rv->[0]->nodeValue, qr/^field="title", value="The Title", extra=xyz$/, "render_value_function() with extra runs" );
+
+throws_ok {
+	EPrints::Script::execute( '$ep.render_value_function("::render_func","title", "xyz")', { session=>$session, ep=>[1,"INT"] } )
+} qr/can't get a property from anything except a hash or object/, 'catches non-data objects'; # NB: error from `property()`
+
+
 $session->terminate;
 
 ok(1);
