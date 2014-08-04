@@ -13,6 +13,8 @@
 
 B<EPrints::Script::Compiled> - Namespace for EPrints::Script functions.
 
+=over 4
+
 =cut
 
 package EPrints::Script::Compiled;
@@ -895,6 +897,8 @@ sub run_render_value_function
 
 
 1;
+
+=back
 
 =head1 COPYRIGHT
 
