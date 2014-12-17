@@ -2068,12 +2068,20 @@ sub fieldlist_sizes
 		}
 	}
 
-	my $searchexp = $dataset->prepare_search(
-		filters => $filters,
-	);
-	
 	# get the id/counts for the menu level requested
-	my $id_map = $searchexp->perform_distinctby( $menu_fields );
+	my $id_map;
+	my $selector = $self->{menus}[$menu_level]->{'select'};
+	if( $selector )
+	{
+		$id_map = $self->call($selector, $repo, $filters);
+	}
+	else
+	{
+		my $searchexp = $dataset->prepare_search(
+			filters => $filters,
+		);
+		$id_map = $searchexp->perform_distinctby( $menu_fields );
+	}
 
 	# if the field is a subject then we populate sizes with the entire tree of
 	# values - each ancestor is the sum of all unique child node entries
@@ -2105,7 +2113,13 @@ sub fieldlist_sizes
 	}
 
 	# calculate the totals
-	$_ = scalar @$_ for values %$id_map;
+	for ( values %$id_map )
+	{
+		if( ref $_ eq 'ARRAY' )
+		{
+			$_ = scalar @$_;
+		}
+	}
 
 	return $id_map;
 }
