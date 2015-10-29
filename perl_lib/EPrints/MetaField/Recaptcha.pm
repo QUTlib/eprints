@@ -33,6 +33,8 @@ package EPrints::MetaField::Recaptcha;
 use EPrints::MetaField::Id;
 @ISA = qw( EPrints::MetaField::Id );
 
+use JSON;
+
 use strict;
 
 sub is_virtual { 1 }
@@ -50,39 +52,77 @@ sub render_input_field_actual
 
 	my $frag = $session->make_doc_fragment;
 
-	my $url = URI->new( "https://www.google.com/recaptcha/api/challenge" );
-	$url->query_form(
-		k => $public_key,
-		error => $value,
-		);
+	if( $session->config( "recaptcha", "v2" ) )
+	{
+		my $url = URI->new( "https://www.google.com/recaptcha/api.js" );
 
-	my $script = $frag->appendChild( $session->make_javascript( undef,
-		src => $url ) );
+		$frag->appendChild( $session->make_javascript( undef,
+			src => $url,
+			async => 'async',
+			defer => 'defer'
+			) );
 
-	$url = URI->new( "https://www.google.com/recaptcha/api/noscript" );
-	$url->query_form(
-		k => $public_key,
-		error => $value,
-		);
+		$frag->appendChild( $session->make_element( "div",
+			class => "g-recaptcha",
+			'data-sitekey' => $public_key,
+			) );
 
-	my $noscript = $frag->appendChild( $session->make_element( "noscript" ) );
-	$noscript->appendChild( $session->make_element( "iframe",
-		src => $url,
-		height => "300",
-		width => "500",
-		frameborder => "0"
-		) );
-	$noscript->appendChild( $session->make_element( "br" ) );
-	$noscript->appendChild( $session->make_element( "textarea",
-		name => "recaptcha_challenge_field",
-		rows => "3",
-		cols => "40"
-		) );
-	$noscript->appendChild( $session->make_element( "input",
-		type => "hidden",
-		name => "recaptcha_response_field",
-		value => "manual_challenge"
-		) );
+		# No-Script, for users with javascript diabled
+		$url = URI->new( "https://www.google.com/recaptcha/api/fallback" );
+		$url->query_form( k => $public_key );
+		my $noscript = $frag->appendChild( $session->make_element( "noscript" ) );
+		$noscript->appendChild( $session->make_element( "iframe",
+			src => $url,
+			height => "422",
+			width => "302",
+			frameborder => "0"
+			) );
+		$noscript->appendChild( $session->make_element( "br" ) );
+		$noscript->appendChild( $session->make_element( "textarea",
+			id => "g-recaptcha-response",
+			name => "g-recaptcha-response",
+			rows => "3",
+			cols => "40"
+			) );
+	}
+	else
+	{
+		my $url = URI->new( "https://www.google.com/recaptcha/api/challenge" );
+		$url->query_form(
+			k => $public_key,
+			error => $value,
+			);
+
+		$frag->appendChild( $session->make_javascript( undef,
+			src => $url
+			) );
+
+		# No-Script, for users with javascript disabled
+		$url = URI->new( "https://www.google.com/recaptcha/api/noscript" );
+		$url->query_form(
+			k => $public_key,
+			error => $value,
+			);
+
+		my $noscript = $frag->appendChild( $session->make_element( "noscript" ) );
+		$noscript->appendChild( $session->make_element( "iframe",
+			src => $url,
+			height => "300",
+			width => "500",
+			frameborder => "0"
+			) );
+		$noscript->appendChild( $session->make_element( "br" ) );
+		$noscript->appendChild( $session->make_element( "textarea",
+			name => "recaptcha_challenge_field",
+			rows => "3",
+			cols => "40"
+			) );
+		$noscript->appendChild( $session->make_element( "input",
+			type => "hidden",
+			name => "recaptcha_response_field",
+			value => "manual_challenge"
+			) );
+	}
 
 	return $frag;
 }
@@ -93,43 +133,80 @@ sub form_value_actual
 
 	my $private_key = $repo->config( "recaptcha", "private_key" );
 
-	my $remote_ip = $repo->remote_ip;
-	my $challenge = $repo->param( "recaptcha_challenge_field" );
-	my $response = $repo->param( "recaptcha_response_field" );
-
 	if( !defined $private_key )
 	{
 		$repo->log( "recaptcha private_key not set" );
 		return undef;
 	}
 
-	# don't bother reCaptcha if the user didn't enter the data
-	if( !EPrints::Utils::is_set( $challenge ) || !EPrints::Utils::is_set( $response ) )
+	my $r;
+
+	if( $repo->config( "recaptcha", "v2" ) )
 	{
-		return "invalid-captcha-sol";
-	}
-
-	my $url = URI->new( "http://www.google.com/recaptcha/api/verify" );
-
-	my $ua = LWP::UserAgent->new();
-
-	my $r = $ua->post( $url, [
-		privatekey => $private_key,
-		remoteip => $remote_ip,
-		challenge => $challenge,
-		response => $response
-		]);
-
-	my $recaptcha_error;
-
-	if( $r->is_success )
-	{
-		my( $success, $recaptcha_error ) = split /\n/, $r->content;
-		if( defined($success) && lc($success) eq "true" )
+		my $response = $repo->param( "g-recaptcha-response" );
+		if( !EPrints::Utils::is_set( $response ) )
 		{
-			return undef
+			return "invalid-captcha-sol";
 		}
-		return $recaptcha_error;
+
+		my $url = URI->new( "https://www.google.com/recaptcha/api/siteverify" );
+
+		my $ua = LWP::UserAgent->new();
+
+		$r = $ua->post( "https://www.google.com/recaptcha/api/siteverify", [
+			secret => $private_key,
+			response => $response
+			]);
+
+		if( $r->is_success )
+		{
+			my $hash = decode_json( $r->content );
+			if( !$hash->{success} )
+			{
+				my $recaptcha_error = 'unknown-error';
+				my $codes = $hash->{'error-codes'};
+				if( $codes && scalar @{$codes} )
+				{
+					$recaptcha_error = join '+', @{$codes};
+				}
+				return $recaptcha_error;
+			}
+		}
+	}
+	else
+	{
+		my $remote_ip = $repo->remote_ip;
+		my $challenge = $repo->param( "recaptcha_challenge_field" );
+		my $response = $repo->param( "recaptcha_response_field" );
+
+		# don't bother reCaptcha if the user didn't enter the data
+		if( !EPrints::Utils::is_set( $challenge ) || !EPrints::Utils::is_set( $response ) )
+		{
+			return "invalid-captcha-sol";
+		}
+
+		my $url = URI->new( "http://www.google.com/recaptcha/api/verify" );
+
+		my $ua = LWP::UserAgent->new();
+
+		my $r = $ua->post( $url, [
+			privatekey => $private_key,
+			remoteip => $remote_ip,
+			challenge => $challenge,
+			response => $response
+			]);
+
+		my $recaptcha_error;
+
+		if( $r->is_success )
+		{
+			my( $success, $recaptcha_error ) = split /\n/, $r->content;
+			if( defined($success) && lc($success) eq "true" )
+			{
+				return undef
+			}
+			return $recaptcha_error;
+		}
 	}
 
 	# error talking to recaptcha, so lets continue to avoid blocking the user
