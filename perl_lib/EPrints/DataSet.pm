@@ -339,6 +339,7 @@ my $INFO = {
 		class => "EPrints::DataObj::SavedSearch",
 		import => 1,
 		index => 1,
+		columns => [qw( id name )],
 	},
 	public_saved_search => {
 		sqlname => "saved_search",
@@ -506,7 +507,7 @@ sub new
 		{
 			foreach my $fielddata ( $oclass->get_system_field_info() )
 			{
-				$self->process_field( $fielddata, 1 );
+				$self->_process_field( $fielddata, 1 );
 			}
 		}
 		my $repository_fields = $repository->get_conf( "fields", $self->{confid} );
@@ -514,7 +515,7 @@ sub new
 		{
 			foreach my $fielddata ( @{$repository_fields} )
 			{
-				$self->process_field( $fielddata, 0 );
+				$self->_process_field( $fielddata, 0 );
 			}
 		}
 
@@ -569,7 +570,7 @@ sub base_id
 
 =begin InternalDoc
 
-=item $field = $ds->process_field( $data [, $system ] )
+=item $field = $ds->_process_field( $data [, $system ] )
 
 Creates a new field in this dataset based on $data. If $system is true defines
 the new field as a "core" field.
@@ -578,7 +579,7 @@ the new field as a "core" field.
 
 =cut
 
-sub process_field
+sub _process_field
 {
 	my( $self, $fielddata, $system ) = @_;
 
@@ -1417,7 +1418,7 @@ Satify all conditions specified. 0 means satisfy any of the conditions specified
 
 =item "staff"=>1
 
-Do search as an adminstrator means you get everything back
+Do search as an administrator means you get everything back
 
 =item "custom_order" => "field1/-field2/field3"
 

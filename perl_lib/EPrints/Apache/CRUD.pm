@@ -26,7 +26,7 @@ You should use the <link> entries in the repository's home page to locate the CR
 
 Create a new eprint based on a single file:
 
-	curl -x POST \
+	curl -X POST \
 		-i \
 		-u user:password \
 		-d 'Hello, World!' \
@@ -168,7 +168,7 @@ Web browsers only allow GET and POST requests. To perform other requests use the
 
 =for MediaWiki {{Available|since=3.3.9}}
 
-If you have the I<upsert> privilege objects will be created on demand, otherwise attempting to PUT to a non-existant object will result in an error.
+If you have the I<upsert> privilege objects will be created on demand, otherwise attempting to PUT to a non-existent object will result in an error.
 
 =head1 METHODS
 
@@ -894,7 +894,7 @@ sub content_negotiate_best_plugin
 	{
 		# summary page is higher priority than anything else for /id/eprint/23
 		# and /id/contents
-		if( $self->scope == CRUD_SCOPE_DATAOBJ || $self->scope == CRUD_SCOPE_USER_CONTENTS )
+		if( ( $self->scope == CRUD_SCOPE_DATAOBJ && $self->{dataset}->base_id ne "subject" ) || $self->scope == CRUD_SCOPE_USER_CONTENTS )
 		{
 			my $plugin = $repo->plugin( "Export::SummaryPage" );
 			my $mimetype = $plugin->param( "produce" );

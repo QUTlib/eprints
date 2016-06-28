@@ -64,8 +64,6 @@ sub get_system_field_info
 		{ name=>"userid", type=>"itemref", 
 			datasetid=>"user", required=>1 },
 
-		{ name=>"pos", type=>"int", required=>1 },
-
 		{ name=>"name", type=>"text" },
 
 		{ name => "spec", type => "search", datasetid => "eprint",
@@ -293,7 +291,7 @@ sub send_out_alert
 	{
 		# Get today's date
 		my( $year, $month, $day ) = EPrints::Time::get_date_array( time );
-		# Substract a month		
+		# Subtract a month
 		$month--;
 
 		# Check for year "wrap"

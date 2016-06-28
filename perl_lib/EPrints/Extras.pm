@@ -41,7 +41,7 @@ Return an XHTML DOM object of the contents of $value. In the case of
 an error parsing the XML in $value return an XHTML DOM object 
 describing the problem.
 
-This is intented to be used by the render_single_value metadata 
+This is intended to be used by the render_single_value metadata
 field option, as an alternative to the default text renderer. 
 
 This allows through any XML element, so could cause problems if
@@ -303,13 +303,23 @@ sub render_possible_doi
 	my( $session, $field, $value ) = @_; 
 
 	$value = "" unless defined $value;
-	$value =~ s!^http://dx\.doi\.org/!!;
+	if( $value =~ m!^
+			(?:http://(?:dx\.)?doi\.org/)?  # add this again later anyway
+			(?:doi:?\s*)?                   # don't need any namespace stuff
+			(10(\.[^./]+)+/.+)              # the actual DOI => $1
+		!ix )
+	{
+		# The only part we care about is the actual DOI.
+		$value = $1;
+	}
+	else
+	{
+		# Doesn't look like a DOI we can turn into a link,
+		# so just render it as-is.
+		return $session->make_text( $value );
+	}
 
-	if( $value !~ m!(doi:)?10(\.[^./]+)+/.+!i ) { return $session->make_text( $value ); }
-	
-	$value =~ s!^doi:!!i;
-
-	my $url = "http://dx.doi.org/$value";
+	my $url = "http://doi.org/$value";
 	my $link = $session->render_link( $url, "_blank" ); 
 	$link->appendChild( $session->make_text( $value ) );
 	return $link; 

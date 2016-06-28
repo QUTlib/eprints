@@ -7,6 +7,7 @@ EPrints::Plugin::Export::Atom
 package EPrints::Plugin::Export::Atom;
 
 use EPrints::Plugin::Export::Feed;
+use EPrints::Const qw( :namespace );
 
 @ISA = ( "EPrints::Plugin::Export::Feed" );
 
@@ -52,7 +53,7 @@ sub output_list
 	&$f( "<?xml version=\"1.0\" encoding=\"utf-8\" ?>" );
 	&$f( '<feed
 	xmlns="http://www.w3.org/2005/Atom"
-	xmlns:opensearch="'.EPrints::Const::EP_NS_OPENSEARCH.'"
+	xmlns:opensearch="'.EP_NS_OPENSEARCH.'"
 	xmlns:xhtml="http://www.w3.org/1999/xhtml"
 	xmlns:sword="http://purl.org/net/sword/"
 >' );

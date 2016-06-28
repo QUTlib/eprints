@@ -772,60 +772,6 @@ This field is required if no creators are listed.
 	<epp:phrase id="Plugin/Screen/Admin/Config/Edit/Config:inline_edit_title">Edit config file</epp:phrase>
 
 
-
-<!-- this is used for the minimal users who have their username locked to their
-     email address -->
-
-    <epp:phrase id="cgi/register:intro_minimal">
-<p>As a registered user you will be able to set up
-saved searches, which are sent when new items 
-are placed in the repository.</p>
-
-<p>Please complete the details on this page to register with <epc:phrase ref="archive_name" />.</p>
-
-<p>The registration process uses email to send you details of how to activate
-your account. You must then check your email and activate your password. Once
-activated you can start to use the registered features of the repository.</p>
-
-<p>If you have already registered but have forgotten your username or password,
-<a href="reset_password">click here</a> to set a new password.</p>
-    </epp:phrase>
-
-
-
-
-
-
-
-    <!-- registration introduction. -->
-    <epp:phrase id="cgi/register:intro">
-<p>You need to register in order to be able to deposit items in the 
-repository. </p>
-
-<p>As a registered user you will be able to manage your items, up to the point
-of submitting them for Editorial Review. If the review is successful your 
-item will be deposited in the repository, if it is unsuccessful it will be 
-returned to you with editorial comments.</p>
-
-<p>In addition to managing your items a registered user can set up
-alert options, so that email notifications are sent when new items 
-are placed in the repository.</p>
-
-<p>Please complete the details on this page to register with <epc:phrase ref="archive_name" />.</p>
-
-<p>The registration process uses email to send you details of how to activate
-your account. You must then check your email and activate your password. Once
-activated you can start to use the registered features of the repository.</p>
-
-<p>If you have already registered but have forgotten your username or password,
-<a href="reset_password">click here</a> to set a new password.</p>
-    </epp:phrase>
-
-
-
-
-
-
 <epp:phrase id="mail_bounce_reason">No reason was given.</epp:phrase>
 
 
@@ -1388,6 +1334,7 @@ For more information see <a href="http://eprints.org/d/?keyword=MetaFields">Meta
     <epp:phrase id="lib/eprint:eprint_gone_title">Item Removed</epp:phrase>
     <epp:phrase id="lib/eprint:eprint_gone"><p>You seem to be attempting to access an item that has been removed from the repository.</p></epp:phrase>
     <epp:phrase id="lib/eprint:later_version"><p>There is a later version of the item you are trying to access:<br/><epc:pin name="citation"/></p></epp:phrase>
+    <epp:phrase id="lib/eprint:replaced_version"><p>There is an earlier version of the item you are trying to access:<br/><epc:pin name="citation"/></p></epp:phrase>
     <epp:phrase id="lib/eprint:curr_disp"><strong>[Currently Displayed]</strong></epp:phrase>
     <epp:phrase id="lib/eprint:not_locked">Not currently locked.</epp:phrase>
     <epp:phrase id="lib/eprint:locked">Locked by <epc:pin name='locked_by' /> until <epc:pin name='locked_until' /></epp:phrase>
@@ -1404,7 +1351,7 @@ For more information see <a href="http://eprints.org/d/?keyword=MetaFields">Meta
 <div style="padding: 0.3em; background-color: black; color: white; font-weight: bold;"><epc:pin name="action"/> by <epc:pin name="cause"/> at <epc:pin name="when"/></div>
 <div style="padding: 0.3em; margin-bottom: 2em; border: solid 1px black;"><epc:pin name="details"/></div>
     </epp:phrase>
-    <epp:phrase id="lib/history:xmlblock"><pre style="margin: 0 0 0 0; padding: 3px 3px 3px 3px; border-left: 1px dashed black; border-bottom: 1px dashed black;"><epc:pin name="xml"/></pre></epp:phrase>
+    <epp:phrase id="lib/history:xmlblock"><pre style="margin: 0 0 0 0; padding: 3px 3px 3px 3px; border-left: 1px dashed black; border-bottom: 1px dashed black; font-size: 13px;"><epc:pin name="xml"/></pre></epp:phrase>
     <epp:phrase id="lib/history:no_such_item"><epc:pin name="datasetid"/> <epc:pin name="objectid"/> does not exist. It may have been erased.</epp:phrase>
 
     <epp:phrase id="history_fieldname_action">Action</epp:phrase>
@@ -1594,13 +1541,13 @@ For more information see <a href="http://eprints.org/d/?keyword=MetaFields">Meta
     <epp:phrase id="lib/searchfield:help_time">Enter a date or date range. 
 <br/>Examples:  "<span class="ep_form_example">1985-</span>", 
 "<span class="ep_form_example">2001-05-17-2002-05-16</span>",
-"<span class="ep_form_example">-11-1980</span>"
+"<span class="ep_form_example">-1980-11</span>"
 </epp:phrase>
 	<epp:phrase id="lib/searchfield:help_timestamp" ref="lib/searchfield:help_time" />
     <epp:phrase id="lib/searchfield:help_date">Enter a date or date range. 
 <br/>Examples:  "<span class="ep_form_example">1985-</span>", 
 "<span class="ep_form_example">2001-05-17-2002-05-16</span>",
-"<span class="ep_form_example">-11-1980</span>"
+"<span class="ep_form_example">-1980-11</span>"
 </epp:phrase>
     <epp:phrase id="lib/searchfield:help_boolean">Select a value.</epp:phrase>
     <epp:phrase id="lib/searchfield:help_email">Enter some text to search for.</epp:phrase>
@@ -1942,7 +1889,6 @@ User Area CGI Scripts
     <epp:phrase id="Plugin/Screen/Admin:admin_actions">Misc. Tools</epp:phrase>
     <epp:phrase id="Plugin/Screen/Admin/Phrases:title">Phrase Editor</epp:phrase>
     <epp:phrase id="Plugin/Screen/Admin/Phrases:description">Modify phrases used in the system.</epp:phrase>
-    <epp:phrase id="Plugin/Screen/QA:title">QA</epp:phrase>
     <epp:phrase id="Plugin/Screen/FirstTool:title">No Tools Available</epp:phrase>
     <epp:phrase id="Plugin/Screen/Status:description">Status information for this server.</epp:phrase>
     <epp:phrase id="Plugin/Screen/DatabaseSchema:description">Show the database schema.</epp:phrase>
@@ -2262,10 +2208,20 @@ Public CGI Scripts
     <epp:phrase id="cgi/register:intro">
 <p>In order to access some areas of the repository, you'll need a <em>user registration</em>. No charge is made for registering with us or using any of our services.</p>
 <p>This page lets you register with <epc:phrase ref="archive_name" />. This will allow you to save searches, receive alerts and deposit items.</p>
-<p>Your new password  will need to confirm your email address by using a code which will be mailed to you.</p>
+<p>A confirmation email will be sent to you. You need to activate your account using the link in the email.</p>
 <p>If you have already registered but have forgotten your username or password, <a href="reset_password">click here</a> to set a new password.</p>
 </epp:phrase>
-	<epp:phrase id="Plugin/Screen/Register:title">Create Account</epp:phrase>
+
+<!-- this is used for the minimal users who have their username locked to their email address -->
+    <epp:phrase id="cgi/register:intro_minimal">
+<p>As a registered user you will be able to set up saved searches, which are sent when new items are placed in the repository.</p>
+<p>Please complete the details on this page to register with <epc:phrase ref="archive_name" />.</p>
+<p>A confirmation email will be sent to you. You need to activate your account using the link in the email.</p>
+<p>If you have already registered but have forgotten your username or password,
+<a href="reset_password">click here</a> to set a new password.</p>
+    </epp:phrase>
+
+    <epp:phrase id="Plugin/Screen/Register:title">Create Account</epp:phrase>
     <epp:phrase id="cgi/register:action_submit">Register</epp:phrase>
     <epp:phrase id="cgi/register:title">Register</epp:phrase>
     <epp:phrase id="cgi/register:missing_field"><p>You have not filled in the &quot;<epc:pin name="fieldname"/>&quot; field.</p></epp:phrase>
@@ -2554,8 +2510,8 @@ Titles and Help for the System Fields
     <epp:phrase id="document_fieldhelp_license">Specify an explicit license for this document (does not affect the access rights you grant at the end of this deposit process). This repository allows <a href="http://creativecommons.org/about/licenses/" target="_blank">Creative Commons</a> licenses.</epp:phrase>
     <epp:phrase id="document_fieldname_date_embargo">Embargo expiry date</epp:phrase>
     <epp:phrase id="document_fieldhelp_date_embargo">The date that a publisher- or sponsor-imposed embargo expires. On and after this date, this document will be made publicly accessible.
-<br/>Example: <span class="ep_form_example">2014 - all documents made publicly accessible on 1st January 2014</span>
-<br/>Example: <span class="ep_form_example">2014 June - all documents made publicly accessible on 1st June 2014</span>
+<br/>Example: <span class="ep_form_example">2016 - document made publicly accessible on 1st January 2017</span>
+<br/>Example: <span class="ep_form_example">2016 June - document made publicly accessible on 1st July 2016</span>
 </epp:phrase>
     <epp:phrase id="document_fieldname_relation">Relationships</epp:phrase>
     <epp:phrase id="document_fieldhelp_relation">This field describes relationships this document has to other entities. Ideally, use URIs for the target identifier.</epp:phrase>
@@ -3008,6 +2964,7 @@ PY = 2006 and OG = (Cambridge)<br />
     <epp:phrase id="Plugin/Screen/Subject/Edit:existing">Link Existing Subject</epp:phrase>
 	<epp:phrase id="Plugin/Screen/Subject/Edit:exists">A subject with that id already exists.</epp:phrase>
     <epp:phrase id="subject_fieldname_name_name">Name</epp:phrase>
+    <epp:phrase id="subject_fieldname_name_sortvalue">Sort name</epp:phrase>
     <epp:phrase id="subject_fieldname_name_lang">Language</epp:phrase>
     <epp:phrase id="Plugin/Screen/Subject/Edit:action_save">Save changes</epp:phrase>
     <epp:phrase id="Plugin/Screen/Subject/Edit:saved">Saved changes</epp:phrase>
@@ -3341,11 +3298,17 @@ PY = 2006 and OG = (Cambridge)<br />
 
 
   <epp:phrase id="licenses_typename_cc_by_nd">Creative Commons: Attribution-No Derivative Works 3.0</epp:phrase>
+  <epp:phrase id="licenses_typename_cc_by_nd_4">Creative Commons: Attribution-No Derivative Works 4.0</epp:phrase>
   <epp:phrase id="licenses_typename_cc_by">Creative Commons: Attribution 3.0</epp:phrase>
+  <epp:phrase id="licenses_typename_cc_by_4">Creative Commons: Attribution 4.0</epp:phrase>
   <epp:phrase id="licenses_typename_cc_by_nc">Creative Commons: Attribution-Noncommercial 3.0</epp:phrase>
+  <epp:phrase id="licenses_typename_cc_by_nc_4">Creative Commons: Attribution-Noncommercial 4.0</epp:phrase>
   <epp:phrase id="licenses_typename_cc_by_nc_nd">Creative Commons: Attribution-Noncommercial-No Derivative Works 3.0</epp:phrase>
+  <epp:phrase id="licenses_typename_cc_by_nc_nd_4">Creative Commons: Attribution-Noncommercial-No Derivative Works 4.0</epp:phrase>
   <epp:phrase id="licenses_typename_cc_by_nc_sa">Creative Commons: Attribution-Noncommercial-Share Alike 3.0</epp:phrase>
+  <epp:phrase id="licenses_typename_cc_by_nc_sa_4">Creative Commons: Attribution-Noncommercial-Share Alike 4.0</epp:phrase>
   <epp:phrase id="licenses_typename_cc_by_sa">Creative Commons: Attribution-Share Alike 3.0</epp:phrase>
+  <epp:phrase id="licenses_typename_cc_by_sa_4">Creative Commons: Attribution-Share Alike 4.0</epp:phrase>
   <epp:phrase id="licenses_typename_cc_public_domain">Creative Commons: Public Domain Dedication</epp:phrase>
   <epp:phrase id="licenses_typename_cc_gnu_gpl">Software: Creative Commons: GNU GPL 2.0</epp:phrase>
   <epp:phrase id="licenses_typename_cc_gnu_lgpl">Software: Creative Commons: GNU LGPL 2.1</epp:phrase>
@@ -3353,12 +3316,18 @@ PY = 2006 and OG = (Cambridge)<br />
   <epp:phrase id="licenses_typename_odc_odbl">Data: Open Database License (ODbL) (Attribution-Share Alike)</epp:phrase>
   <epp:phrase id="licenses_typename_odc_by">Data: Open Data Commons Attribution License (Attribution)</epp:phrase>
 
-  <epp:phrase id="licenses_description_cc_by_nd"><a href="http://creativecommons.org/licenses/by-nd/2.5/">Creative Commons Attribution No Derivatives</a></epp:phrase>
-  <epp:phrase id="licenses_description_cc_by"><a href="http://creativecommons.org/licenses/by/2.5/">Creative Commons Attribution</a></epp:phrase>
-  <epp:phrase id="licenses_description_cc_by_nc"><a href="http://creativecommons.org/licenses/by-nc/2.5/">Creative Commons Attribution Non-commercial</a></epp:phrase>
-  <epp:phrase id="licenses_description_cc_by_nc_nd"><a href="http://creativecommons.org/licenses/by-nc-nd/2.5/">Creative Commons Attribution Non-commercial No Derivatives</a></epp:phrase>
-  <epp:phrase id="licenses_description_cc_by_nc_sa"><a href="http://creativecommons.org/licenses/by-nc-sa/2.5/">Creative Commons Attribution Non-commercial Share Alike</a></epp:phrase>
-  <epp:phrase id="licenses_description_cc_by_sa"><a href="http://creativecommons.org/licenses/by-sa/2.5/">Creative Commons Attribution Share Alike</a></epp:phrase>
+  <epp:phrase id="licenses_description_cc_by_nd"><a href="http://creativecommons.org/licenses/by-nd/3.0/">Creative Commons Attribution No Derivatives</a></epp:phrase>
+  <epp:phrase id="licenses_description_cc_by_nd_4"><a href="http://creativecommons.org/licenses/by-nd/4.0/">Creative Commons Attribution No Derivatives</a></epp:phrase>
+  <epp:phrase id="licenses_description_cc_by"><a href="http://creativecommons.org/licenses/by/3.0/">Creative Commons Attribution</a></epp:phrase>
+  <epp:phrase id="licenses_description_cc_by_4"><a href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution</a></epp:phrase>
+  <epp:phrase id="licenses_description_cc_by_nc"><a href="http://creativecommons.org/licenses/by-nc/3.0/">Creative Commons Attribution Non-commercial</a></epp:phrase>
+  <epp:phrase id="licenses_description_cc_by_nc_4"><a href="http://creativecommons.org/licenses/by-nc/4.0/">Creative Commons Attribution Non-commercial</a></epp:phrase>
+  <epp:phrase id="licenses_description_cc_by_nc_nd"><a href="http://creativecommons.org/licenses/by-nc-nd/3.0/">Creative Commons Attribution Non-commercial No Derivatives</a></epp:phrase>
+  <epp:phrase id="licenses_description_cc_by_nc_nd_4"><a href="http://creativecommons.org/licenses/by-nc-nd/4.0/">Creative Commons Attribution Non-commercial No Derivatives</a></epp:phrase>
+  <epp:phrase id="licenses_description_cc_by_nc_sa"><a href="http://creativecommons.org/licenses/by-nc-sa/3.0/">Creative Commons Attribution Non-commercial Share Alike</a></epp:phrase>
+  <epp:phrase id="licenses_description_cc_by_nc_sa_4"><a href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Creative Commons Attribution Non-commercial Share Alike</a></epp:phrase>
+  <epp:phrase id="licenses_description_cc_by_sa"><a href="http://creativecommons.org/licenses/by-sa/3.0/">Creative Commons Attribution Share Alike</a></epp:phrase>
+  <epp:phrase id="licenses_description_cc_by_sa_4"><a href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution Share Alike</a></epp:phrase>
   <epp:phrase id="licenses_description_cc_public_domain"><a href="http://creativecommons.org/licenses/publicdomain/">Creative Commons Public Domain Dedication</a></epp:phrase>
   <epp:phrase id="licenses_description_cc_gnu_gpl"><a href="http://creativecommons.org/licenses/GPL/2.0/">Creative Commons GNU GPL (Software)</a></epp:phrase>
   <epp:phrase id="licenses_description_cc_gnu_lgpl"><a href="http://creativecommons.org/licenses/LGPL/2.1/">Creative Commons GNU LGPL (Software)</a></epp:phrase>
@@ -3968,11 +3937,13 @@ To create a blank EPM entire a new id in the input and click <epc:phrase ref="Pl
 	<epp:phrase id="document_typename_indexcodes">Indexer Terms</epp:phrase>
 	<epp:phrase id="document_typename_text/html">HTML</epp:phrase>
 	<epp:phrase id="document_typename_application/pdf">PDF</epp:phrase>
+	<epp:phrase id="document_typename_application/adobe">PDF</epp:phrase>
 	<epp:phrase id="document_typename_application/postscript">Postscript</epp:phrase>
 	<epp:phrase id="document_typename_text/plain">Plain Text</epp:phrase>
 	<epp:phrase id="document_typename_application/vnd.ms-powerpoint">Microsoft PowerPoint</epp:phrase>
 	<epp:phrase id="document_typename_application/vnd.ms-excel">Microsoft Excel</epp:phrase>
 	<epp:phrase id="document_typename_application/msword">Microsoft Word</epp:phrase>
+	<epp:phrase id="document_typename_application/vnd.openxmlformats-officedocument.wordprocessingml.document">XML Word Processing Document (DOCX)</epp:phrase>
 	<epp:phrase id="document_typename_image/jpeg">Image (JPEG)</epp:phrase>
 	<epp:phrase id="document_typename_image/jpg">Image (JPEG)</epp:phrase>
 	<epp:phrase id="document_typename_image/png">Image (PNG)</epp:phrase>

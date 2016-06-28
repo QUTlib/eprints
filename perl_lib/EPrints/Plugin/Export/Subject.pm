@@ -47,6 +47,12 @@ sub output_dataobj
 	push @parts, join ",", @$parents;
 	push @parts, $dataobj->is_set( "depositable" ) && $dataobj->get_value( "depositable" ) eq "TRUE" ? "1" : "0";
 
+	# percent-encode ":" to "%3A"
+	foreach my $i (0..$#parts)
+	{
+		$parts[$i] =~ s/:/%3A/g;	
+	}
+
 	return join(":", @parts)."\n";
 }
 

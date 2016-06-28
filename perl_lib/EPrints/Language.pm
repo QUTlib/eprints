@@ -98,6 +98,11 @@ sub new
 		$repository->get_conf( "config_path" ).
 			"/lang/".$self->{id}."/phrases" );
 
+	$self->_read_phrases_dir(
+		$self->{data},
+		$repository->get_conf( "lib_path" ).
+			"/lang/".$self->{id}."/phrases" );
+
 	if( -e $repository->config( "base_path" )."/site_lib/lang/".$self->{id}."/phrases" )
 	{
 		$self->_read_phrases_dir(
@@ -105,11 +110,6 @@ sub new
 			$repository->config( "base_path" ).
 				"/site_lib/lang/".$self->{id}."/phrases" );
 	}
-
-	$self->_read_phrases_dir(
-		$self->{data},
-		$repository->get_conf( "lib_path" ).
-			"/lang/".$self->{id}."/phrases" );
 
 	return( $self );
 }
@@ -295,7 +295,7 @@ sub phrase
 	{
 		if( !$used->{$_} )
 		{
-			# Should log this, but somtimes it's supposed to happen!
+			# Should log this, but sometimes it's supposed to happen!
 			# $session->get_repository->log( "Unused parameter \"$_\" passed to phrase \"$phraseid\"" );
 			EPrints::XML::dispose( $inserts->{$_} );
 		}

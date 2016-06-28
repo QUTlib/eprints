@@ -268,7 +268,7 @@ sub handler
 	}
 
 	# sitemap.xml (nb. only works if site is in root / of domain.)
-	if( $uri =~ m! ^$urlpath/sitemap\.xml$ !x )
+	if( $uri =~ m! ^$urlpath/sitemap(?:-sc)\.xml$ !x )
 	{
 		$r->handler( 'perl-script' );
 
@@ -468,6 +468,11 @@ sub handler
 		# OK, It's the EPrints abstract page (or something whacky like /23/fish)
 		else
 		{
+			if( $eprint->get_value( "eprint_status" ) eq "deletion" )
+			{
+				EPrints::Apache::AnApache::send_status_line( $r, 404, "Not Found" );
+			}
+
 			my $path = "/archive/" . $eprint->store_path();
 			EPrints::Update::Abstract::update( $repository, $lang, $eprint->id, $path );
 

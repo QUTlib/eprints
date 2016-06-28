@@ -31,7 +31,9 @@ the top level configurations for repositories - the XML files in /archives/
 Deprecated, use L<EPrints>::abort.
 
 =item EPrints::Config::get_archive_config
+
 =item EPrints::Config::get_archive_ids
+
 =item EPrints::Config::load_archive_config_module
 
 Deprecated, use *_repository_*.
@@ -140,7 +142,7 @@ sub load_system_config
 		${"EPrints::SystemSettings::config"} = $SYSTEMCONF;
 	}
 
-	eval &_bootstrap( "EPrints::SystemSettings" );
+	eval &_bootstrap( "EPrints::SystemSettings" ) or die $@;
 
 	# we want to sort by filename because we interleave files from default and
 	# custom locations
@@ -269,7 +271,7 @@ sub load_repository_config_module
 		${"EPrints::Config::${id}::config"} = $info;
 	}
 
-	eval &_bootstrap( "EPrints::Config::".$id );
+	eval &_bootstrap( "EPrints::Config::".$id ) or die $@;
 
 	# we want to sort by filename because we interleave files from default and
 	# custom locations
@@ -317,6 +319,7 @@ sub load_config_file
 }
 }
 
+1;
 EOP
 }
 
