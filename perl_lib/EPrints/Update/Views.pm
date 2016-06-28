@@ -676,7 +676,7 @@ sub update_view_list
 
 				if( !$first )
 				{
-					$groups->appendChild( $repo->html_phrase( "Update/Views:group_seperator" ) );
+					$groups->appendChild( $repo->html_phrase( "Update/Views:group_separator" ) );
 				}
 
 				my $group;
@@ -827,13 +827,13 @@ sub update_view_list
 	
 			if( !$first )
 			{
-				if( $opts->{"no_seperator"} ) 
+				if( $opts->{"no_separator"} ) 
 				{
 					$jumps->appendChild( $repo->make_text( " " ) );
 				}
 				else
 				{
-					$jumps->appendChild( $repo->html_phrase( "Update/Views:jump_seperator" ) );
+					$jumps->appendChild( $repo->html_phrase( "Update/Views:jump_separator" ) );
 				}
 			}
 
@@ -1965,7 +1965,7 @@ sub get_view_opts
 	if( $opts->{"cloud"} )
 	{
 		$opts->{"jump"} = "plain";
-		$opts->{"no_seperator"} = 1;
+		$opts->{"no_separator"} = 1;
 		$opts->{"cloudmin"} = 80 unless defined $opts->{"cloudmin"};
 		$opts->{"cloudmax"} = 200 unless defined $opts->{"cloudmax"};
 	}

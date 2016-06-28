@@ -895,6 +895,53 @@ sub _load_languages
 }
 
 
+=item $xhtml_phrase = $repository->deprecated_html_phrase( $dep_phraseid, $new_phraseid, %inserts)
+
+Return an XHTML DOM object describing a phrase from the phrase files,
+the same as when using html_phrase.
+
+If $dep_phraseid is found to exist as a phrase, then a warning is
+emitted about using a deprecated phrase, and that phrase is returned.
+
+Otherwise, $new_phraseid is used, whether it exists or not.
+
+=cut
+
+sub deprecated_html_phrase
+{
+	my( $self, $dep_phraseid, $new_phraseid, %inserts ) = @_;
+
+	my( $dep_xml ) = $self->{lang}->_get_phrase( $dep_phraseid );
+	if( defined $dep_xml )
+	{
+		$self->log( "Warning! using deprecated phrase '$dep_phraseid' for '$new_phraseid'" );
+		return $self->html_phrase( $dep_phraseid, %inserts );
+	}
+	return $self->html_phrase( $new_phraseid, %inserts );
+}
+
+
+=item $phrase = $repository->deprecated_phrase( $dep_phraseid, $new_phraseid, %inserts)
+
+Performs the same function as deprecated_html_phrase, but returns
+plain text, as per phrase.
+
+=cut
+
+sub deprecated_phrase
+{
+	my( $self, $dep_phraseid, $new_phraseid, %inserts ) = @_;
+
+	my( $dep_xml ) = $self->{lang}->_get_phrase( $dep_phraseid );
+	if( defined $dep_xml )
+	{
+		$self->log( "Warning! using deprecated phrase '$dep_phraseid' for '$new_phraseid'" );
+		return $self->phrase( $dep_phraseid, %inserts );
+	}
+	return $self->phrase( $new_phraseid, %inserts );
+}
+
+
 ######################################################################
 =pod
 
