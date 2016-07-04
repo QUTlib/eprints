@@ -192,7 +192,7 @@ sub update_auto_js
 			"$target_dir/javascript/auto.js",
 			"js",
 			\@dirs,
-			{ minifier => $session->get_repository->config('minify_autojs') ? 'CSS::Minifier::minify' : undef },
+			{ minifier => $session->get_repository->config('minify_autojs') ? 'JavaScript::Minifier::minify' : undef },
 		);
 }
 
