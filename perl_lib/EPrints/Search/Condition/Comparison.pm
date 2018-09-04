@@ -54,7 +54,8 @@ sub _logic_time
 		'<=', [ '<', 1 ],
 		'>', [ '>', 0 ],
 		'<', [ '<', 0 ],
-		'=', [ undef, 1 ] }->{$self->{op}} };
+		'=', [ undef, 1 ],
+		'<>',[ undef, 0 ] }->{$self->{op}} };
 	my $timemap = [ 'year','month','day','hour','minute','second' ];
 
 	my @parts = split( /[-: TZ]/, $self->{params}->[0] );
@@ -89,6 +90,16 @@ sub _logic_time
 			push @and, $database->quote_identifier($table,$sql_col."_".$timemap->[$i])." = ".EPrints::Database::prep_int( $parts[$i] ); 
 		}
 		push @or, "( ".join( " AND ", @and )." )";
+	}
+
+	if( $self->{op} eq '<>' )
+	{
+		my @nor = ();
+		for( my $i=0;$i<$nparts;++$i )
+		{
+			push @nor, $database->quote_identifier($table,$sql_col."_".$timemap->[$i])." <> ".EPrints::Database::prep_int( $parts[$i] ); 
+		}
+		push @or, "( ".join( " OR ", @nor )." )";
 	}
 
 	return "(".join( " OR ", @or ).")";
@@ -178,6 +189,7 @@ sub logic
 	my $table = $prefix . $self->table;
 	my $field = $self->{field};
 	my $sql_name = $field->get_sql_name;
+	my $glue = ( $self->{op} eq '<>' ? 'OR' : 'AND' );
 
 	if( $field->isa( "EPrints::MetaField::Name" ) )
 	{
@@ -189,7 +201,7 @@ sub logic
 				$self->{op},
 				$db->quote_value( $self->{params}->[0]->{$_} ) );
 		}
-		return "(".join(") AND (", @logic).")";
+		return "(".join(") $glue (", @logic).")";
 	}
 	elsif( $field->isa( "EPrints::MetaField::Compound" ) )
 	{
@@ -215,7 +227,7 @@ sub logic
 					$self->{op},
 					$db->quote_value( $self->{params}->[0]->{$f->property( "sub_name" )} ) );
 		}
-		return "(".join(") AND (", @logic).")";
+		return "(".join(") $glue (", @logic).")";
 	}
 	elsif( $field->isa( "EPrints::MetaField::Multipart" ) )
 	{
@@ -227,7 +239,7 @@ sub logic
 				$self->{op},
 				$db->quote_value( $self->{params}->[0]->{$_} ) );
 		}
-		return "(".join(") AND (", @logic).")";
+		return "(".join(") $glue (", @logic).")";
 	}
 	elsif( $field->isa( "EPrints::MetaField::Date" ) )
 	{
