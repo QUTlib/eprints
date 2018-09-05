@@ -103,6 +103,7 @@ sub new
 	if( $op eq "TRUE" ) { return EPrints::Search::Condition::True->new( @params ); }
 	if( $op eq "FALSE" ) { return EPrints::Search::Condition::False->new( @params ); }
 	if( $op eq "PASS" ) { return EPrints::Search::Condition::Pass->new( @params ); }
+	if( $op eq "NOT" ) { return EPrints::Search::Condition::Not->new( @params ); }
 	if( $op eq "AND" ) { return EPrints::Search::Condition::And->new( @params ); }
 	if( $op eq "OR" ) { return EPrints::Search::Condition::Or->new( @params ); }
 	if( $op eq "index" ) { return EPrints::Search::Condition::Index->new( @params ); }
